@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+{% load bootstrap3 %}
+{% load static %}
+
+{% block body_block %}
+<br />
+<div class="container">
+  <div class="row">
+    <div class="col-sm-9 col-md-9 col-lg-7 mx-auto">
+      <div class="card card-signin my-5">
+        <div class="card-body">
+          <h5 class="card-title text-center"><b>Register</b></h5>
+          <form class="form-signin" method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+              <br />
+              <label for="contact_input">Email/Phone number</label>
+              <p></p>
+              <input id="contact_input" style="width:650px;height:35px;border-radius:5px" type="text" name="contact">
+              {{ other_form|crispy }}
+              {{ basic_form|crispy }}
+            </fieldset>
+            <div class="form-group">
+              <button
+                class="btn btn-lg btn-primary btn-block text-uppercase"
+                type="submit"
+              >
+                Sign Up</button
+              ><br /><br />
+            </div>
+            <small
+              ><p class="text-center">
+                Already Registered!
+                <a href="{% url 'login_user' %}"><b>Login Now!</b></a>
+              </p></small
+            >
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

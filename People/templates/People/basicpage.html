@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block body_block %}
+<nav class="navbar navbar-custom"  id="navbar" style="color:white">
+    <div class="container">
+
+        <ul class="nav navbar-nav navbar-right">
+            <li ><a  class="btn btn-simple" href="{% url 'People:homepage' %}">Home</a></li>
+            <li><a  class="btn btn-simple" href="{% url 'People:list_request' slug=cur_user.profile.slug %}">See Requests</a></li>
+            <li><a  class="btn btn-simple" href="{% url 'People:profile_page' slug=cur_user.profile.slug %}">Profile</a></li>
+            <li><a  class="btn btn-simple" href="{% url 'People:edit_profile' pk=cur_user.profile.pk %}">Profile Edit</a></li>
+            <li><a  class="btn btn-simple" href="{% url 'Activities:post_create' %}">Create Posts</a></li>
+
+            </ul>
+    </div>
+</nav>
+
+
+<div class="profile-page">
+    <div class="container">
+        <div class="row">
+            {% block preprofile %}{% endblock %}
+            {% block profile_content %}{% endblock %}
+            {% block post_profile %}{% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

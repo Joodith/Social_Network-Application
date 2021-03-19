@@ -1,0 +1,42 @@
+{% extends 'People/basicpage.html' %}
+{% block profile_content %}
+<div class="col-md-2">
+    <a href="{{ cur_user.profile.profile_pic.url }}">
+                  <img
+                    src="{{ cur_user.profile.profile_pic.url }}"
+                    class="rounded-circle"
+                    width="160px"
+                    height="160px"
+                  />
+                </a>
+
+    <a href="{% url 'People:follo_wer' slug=cur_user.profile.slug %}">
+                    <span class="badge ">{{req.count}}</span>
+                    follower{{followers.count|pluralize}}
+</a>
+
+
+
+                    <a href="{% url 'People:follo_wing' slug=cur_user.profile.slug %}">
+                    <span class="badge ">{{following.count}}</span>
+                    following
+                        </a>
+
+<div>
+{{cur_user.profile.bio}}
+    <h1>POSTS</h1>
+    {% for post in cur_user.posts.all %}
+    <a href="{% url 'Activities:detail_post' pk=post.pk %}">
+                  <img
+                    src="{{ post.pic.url }}"
+                    class="rounded-circle"
+                    width="160px"
+                    height="160px"
+                  />
+                </a>
+    {% endfor %}
+</div>
+
+</div>
+{% endblock %}
+

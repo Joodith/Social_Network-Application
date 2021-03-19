@@ -1,0 +1,21 @@
+{% extends 'People/basicpage.html' %}
+{% block profile_content %}
+<div>
+    <h1>HELLO REQUESTS </h1>
+    {% for req in request_list %}
+    <div class="list-group" style="width:470px">
+
+        <h3 class="list-group-item-text">{{req.from_user.user.username}}</h3>
+        <h3 class="list-group-item-text">{{req.from_user.full_name}}</h3>
+
+
+
+        <a href="{% url 'People:req_accept' pk=req.from_user.pk %}" class="btn btn-primary">Confirm</a>
+        <a href="{% url 'People:req_del' pk=req.from_user.pk %}" class="btn btn-primary">X</a>
+
+
+    </div>
+
+    {% endfor %}
+    {% endblock %}
+

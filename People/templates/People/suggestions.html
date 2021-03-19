@@ -1,0 +1,193 @@
+{% extends 'People/basicpage.html' %}
+{% block preprofile %}
+<nav class="navbar navbar-custom"  id="navbar" style="color:white">
+    <div class="container">
+        <ul class="nav navbar-nav">
+<form method="GET" action="{% url 'People:search_users' %}">
+            <input style="width:250px;height:35px" type="text" name="search" placeholder="Search friends">
+   <input type="submit" class="btn btn-warning" value="Search">
+
+
+        </form>
+    </ul>
+
+    </div>
+</nav>
+{% endblock %}
+
+{% block profile_content %}
+
+<input type="hidden" id="list" value={{pkvalues}}>
+<input type="hidden" id="incr" value=0>
+<div>
+{% for p in post_list %}
+
+<div class="col-md-2">
+    <a href="{{ p.pic.url }}">
+                  <img
+                    src="{{ p.pic.url }}"
+                    class="rounded-circle"
+                    width="160px"
+                    height="160px"
+                  />
+                </a>
+    <h2>Posted by:{{p.posted_user}}</h2>
+   {% if p in like_list %}
+    <a onclick="like_func({{p.pk}})" ><img id="cur_like{{p.pk}}" style="height:40px;width:40px" src="https://www.pinclipart.com/picdir/middle/59-595072_heart-instagram-like-icon-png-clipart.png"></a>
+    {% else %}
+    <a onclick="like_func({{p.pk}})" ><img id="cur_unlike{{p.pk}}" style="height:40px;width:40px" src="https://icon-library.com/images/like-heart-icon/like-heart-icon-9.jpg"></a>
+    {% endif %}
+
+
+    <img hidden id="image_unlike{{p.pk}}" src="https://icon-library.com/images/like-heart-icon/like-heart-icon-9.jpg">
+    <img hidden id="image_like{{p.pk}}" src="https://www.pinclipart.com/picdir/middle/59-595072_heart-instagram-like-icon-png-clipart.png">
+    <h3>Liked by :
+        <span id="likes{{p.pk}}">{{ p.likes.all.count }}</span>
+        </h3>
+    <input id="like_count{{p.pk}}" type="hidden" value={{ p.likes.all.count }}>
+    <h2 style="color:blue">Comments</h2>
+    {% for j in p.commented.all %}
+    <div  cols="100" rows="20">
+        <h4>{{j.commented_user}}</h4>
+        {{j.comment}}
+    </div><br>
+{% endfor %}
+    <div id="chat-log{{p.pk}}" cols="100" rows="10">
+
+        </div>
+
+
+
+    <input  id="chat-message-input{{p.pk}}" type="text" size="100"><br>
+
+    <input type="hidden" id="1" value={{p.pk}}>
+    <input type="hidden" id="user" value={{cur_user}}>
+    <input  onclick="exec({{p.pk}})" id="chat-message-submit{{p.pk}}" type="button" value="Comment">
+
+
+    {% ifequal p.posted_user cur_user.profile.user %}
+    <a href="{% url 'Activities:update_post' pk=p.pk %}">Update</a>
+    {% endifequal %}
+ </div>
+{% endfor %}
+</div>
+<script>
+function exec(pkk){
+alert("Hello");
+        var s1=$("#chat-message-input"+pkk).val();
+        console.log(s1);
+        var usr=$("#user").val();
+        $("#chat-log"+pkk).append(usr).css("font-size",25);
+        $("#chat-log"+pkk).append("<br>");
+        $("#chat-log"+pkk).append($("#chat-message-input"+pkk).val()).css("font-size",15);
+         $("#chat-log"+pkk).append("\n");
+
+        $.ajax({
+        type:'GET',
+        url:"{% url 'Activities:comment_post' %}",
+        data:{
+        desc:$("#chat-message-input"+pkk).val(),
+        pk:pkk,
+        },
+        success:function(data){
+        console.log(data.desc);
+        }
+        });
+        $("#chat-message-input"+pkk).val("");
+
+}
+function like_func(pkk){
+
+let value,changed,count_like;
+var ch=false;
+count_like=$("#like_count"+pkk).val();
+count_like=parseInt(count_like);
+let o=$("#likes"+pkk).text();
+o=parseInt(o);
+
+var img1=$("#image_like"+pkk).attr("src");
+var img2=$("#image_unlike"+pkk).attr("src");
+
+if($("#cur_like"+pkk).length){
+ch=true;
+if($("#cur_like"+pkk).attr("src")===img1){
+changed=img2;
+console.log(count_like-1);
+
+$("#likes"+pkk).text(o-1);
+}
+else{
+changed=img1;
+$("#likes"+pkk).text(o+1);
+}
+}
+else{
+if($("#cur_unlike"+pkk).attr("src")===img1){
+changed=img2;
+console.log(count_like-1);
+
+$("#likes"+pkk).text(o-1);
+}
+else{
+changed=img1;
+$("#likes"+pkk).text(o+1);
+}
+}
+
+$.ajax({
+        type:'GET',
+        url:"{% url 'Activities:like_post' %}",
+        data:{
+        pk:pkk,
+        },
+        success:function(){
+        if(ch){
+        $("#cur_like"+pkk).attr("src",changed);
+        }
+        else{
+        $("#cur_unlike"+pkk).attr("src",changed);
+        }
+
+        }
+        });
+
+
+}
+
+    </script>
+{% endblock %}
+
+
+{% block post_profile %}
+<div>
+
+    {% for prof,st in suggestions %}
+<div class="row">
+<div class="col-md-4">
+
+        <a href="{{ prof.profile_pic.url }}">
+                  <img
+                    src="{{ prof.profile_pic.url }}"
+                    class="rounded-circle"
+                    width="120px"
+                    height="120px"
+                  />
+                </a>
+
+        <h3 >{{prof.user.username}}</h3>
+        <h4 >{{prof.full_name}}</h4>
+
+        {% ifequal st "Requested" %}
+        <a  href="{% url 'People:req_cancel' pk=prof.pk %}" class="btn btn-primary">{{st}}</a>
+        {% else %}
+         <a id="change"  href="{% url 'People:req_send' slug=cur_user.profile.slug pk=prof.pk %}" class="btn btn-primary">{{st}}</a>
+        {% endifequal %}
+</div>
+    </div>
+
+     {% endfor %}
+
+
+</div>
+    {% endblock %}
+
