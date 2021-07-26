@@ -30,8 +30,9 @@ obj=HttpRequest()
 
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^admin/', admin.site.urls,name='admin'),
     #url('^', include('django.contrib.auth.urls')),
+    url(r'^socket/',include('learn_chat.urls',namespace='learn_chat')),
     url(r'^test_cookie/$',super_view.cookie_test,name="cookie_test"),
     url(r'^delete_cookie/$',super_view.cookie_delete,name="delete_cookie"),
     url(r'^$',super_view.StartPage,name="start"),

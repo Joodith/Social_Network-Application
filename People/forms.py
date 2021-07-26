@@ -30,7 +30,7 @@ class UserExtraDetailsForm(forms.ModelForm):
 
     class Meta:
         model=Profile
-        fields=('full_name',)
+        fields=('full_name','email')
 
 
 

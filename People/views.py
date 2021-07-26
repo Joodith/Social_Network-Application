@@ -15,6 +15,9 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.views.generic import UpdateView,ListView,RedirectView,TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.mail import send_mail,EmailMultiAlternatives
+from django.contrib.auth import settings
+from django.template.loader import get_template
 import json
 import random
 
@@ -242,6 +245,15 @@ class SendRequestView(LoginRequiredMixin,RedirectView):
         except:
             messages.add_message(request,messages.ERROR,"User not found!")
             return HttpResponse("User not found!")
+        recipient = requested_user.user.email
+        subject = "Friend Request sent"
+        with open(settings.BASE_DIR + "/People/templates/People/view_request.txt") as fl:
+            tell_message = fl.read()
+        message = EmailMultiAlternatives(subject=subject,
+                                         body=tell_message, from_email=settings.EMAIL_HOST_USER, to=[recipient])
+        html_template = get_template("People/view_request.html").render(context={'cur_user':self.request.user})
+        message.attach_alternative(html_template, "text/html")
+        message.send()
 
 
 
@@ -278,8 +290,17 @@ def accept_request(request,pk):
     to_del=FollowRequest.objects.get(from_user=from_user,to_user=myself)
     follow_back=to_del.from_user
     to_del.delete()
+    recipient =request.user.email
+    subject = "Friend Request sent"
+    with open(settings.BASE_DIR + "/People/templates/People/view_request.txt") as fl:
+        tell_message = fl.read()
+    message = EmailMultiAlternatives(subject=subject,
+                                     body=tell_message, from_email=settings.EMAIL_HOST_USER, to=[recipient])
+    html_template = get_template("People/request_accept_email.html").render(context={'cur_user': request.user})
+    message.attach_alternative(html_template, "text/html")
+    message.send()
 
-    return render(request,"People/other_profile.html",{'follow_back':follow_back,'cur_user':myself,'already':already})
+    return render(request,"People/other_profile.html",{'follow_back':follow_back,'cur_user':request.user,'already':already})
 
 @login_required
 def delete_accept(request,pk):

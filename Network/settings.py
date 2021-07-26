@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,7 +25,7 @@ TEMPLATE_DIR=os.path.join(BASE_DIR,'templates')
 SECRET_KEY = '=ui6c9qjp-(i^y($66=&gn#a_*n*&(2@#_6omnnn%07d7ob^m%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -43,6 +44,8 @@ INSTALLED_APPS = [
     'People',
     'Activities',
     'channels',
+    'chat',
+    'learn_chat',
 ]
 
 AUTHY_KEY='5geF9fC4GcmuEPxVKNBi6ZUEZtqobC4W'
@@ -79,12 +82,22 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Network.wsgi.application'
-ASGI_APPLICATION = "Network.asgi.application"
+ASGI_APPLICATION = "Network.asgi.django_application"
+DJANGO_SETTINGS_MODULE='Network.settings'
 
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
+CHANNEL_LAYERS={
+    'default':{
+        'BACKEND':"asgi_redis.RedisChannelLayer",
+        'CONFIG':{
+              'hosts':['127.0.0.1','5050']
+},
+        'ROUTING':"Network.routing.channel_routing",
+    },
+}
+print(os.environ.get('DB_PASSWORD'))
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -103,10 +116,9 @@ EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST ='smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER ='flarance2375@gmail.com'
-EMAIL_HOST_PASSWORD ='flarancejoody@7'
-#EMAIL_HOST_USER ='flarance2375@gmail.com'
-#EMAIL_HOST_PASSWORD ='flarancejoody@7'
+EMAIL_HOST_USER ="flarance2375@gmail.com"
+EMAIL_HOST_PASSWORD ="maryjoody@16"
+
 
 
 # Password validation
@@ -155,3 +167,5 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT=os.path.join(BASE_DIR,'mediafiles')
 MEDIA_URL='/media/'
+
+django_heroku.settings(locals())

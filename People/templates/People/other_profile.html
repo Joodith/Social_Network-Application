@@ -5,10 +5,10 @@
 <h2>{{follow_back.full_name}}</h2>
 <h3>is following you...</h3>
 {% if not already %}
-<a href="{% url 'People:req_send' slug=cur_user.slug  pk=follow_back.pk %}" class="btn btn-primary">Follow back</a>
-<a href="{% url 'People:list_request' slug=cur_user.slug %}" class="btn btn-primary">Cancel</a>
+<a href="{% url 'People:req_send' slug=cur_user.profile.slug  pk=follow_back.pk %}" class="btn btn-primary">Follow back</a>
+<a href="{% url 'People:list_request' slug=cur_user.profile.slug %}" class="btn btn-primary">Cancel</a>
 {% else %}
-<a href="{% url 'People:list_request' slug=cur_user.slug %}" class="btn btn-primary">Go Back</a>
+<a href="{% url 'People:list_request' slug=cur_user.profile.slug %}" class="btn btn-primary">Go Back</a>
 {% endif %}
 
 {% endblock %}

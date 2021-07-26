@@ -22,7 +22,7 @@
 <div>
 {% for p in post_list %}
 
-<div class="col-md-2">
+<div class="col-md-20">
     <a href="{{ p.pic.url }}">
                   <img
                     src="{{ p.pic.url }}"
@@ -31,6 +31,7 @@
                     height="160px"
                   />
                 </a>
+    <h4 style="color:blue">{{p.description}}</h4>
     <h2>Posted by:{{p.posted_user}}</h2>
    {% if p in like_list %}
     <a onclick="like_func({{p.pk}})" ><img id="cur_like{{p.pk}}" style="height:40px;width:40px" src="https://www.pinclipart.com/picdir/middle/59-595072_heart-instagram-like-icon-png-clipart.png"></a>
@@ -69,6 +70,7 @@
     <a href="{% url 'Activities:update_post' pk=p.pk %}">Update</a>
     {% endifequal %}
  </div>
+
 {% endfor %}
 </div>
 <script>
@@ -159,8 +161,9 @@ $.ajax({
 
 
 {% block post_profile %}
-<div>
 
+<div>
+    <h2>SUGGESTIONS</h2>
     {% for prof,st in suggestions %}
 <div class="row">
 <div class="col-md-4">
